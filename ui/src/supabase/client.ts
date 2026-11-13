@@ -35,7 +35,7 @@ export const supabase = createClient<Database>(
       detectSessionInUrl: true,
     },
     db: {
-      schema: (import.meta.env.VITE_SUPABASE_SCHEMA || "public") as "public",
+      schema: (import.meta.env.VITE_SUPABASE_SCHEMA || "openbsp") as "public",
     },
   },
 );

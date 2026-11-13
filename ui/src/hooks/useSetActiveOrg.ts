@@ -12,7 +12,10 @@ export const useSetActiveOrg = () => {
     if (!data) return;
 
     const orgIds = data
-      .sort((a, b) => +b.created_at - +a.created_at)
+      .sort(
+        (a, b) =>
+          new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
+      )
       .map((o) => o.id);
 
     // Keep the current org if it still exists
