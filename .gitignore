@@ -14,8 +14,10 @@ supabase/.temp
 
 # Node
 node_modules
-package.json
-package-lock.json
+/package.json
+/package-lock.json
+ui/node_modules
+ui/dist
 
 mise.toml
 

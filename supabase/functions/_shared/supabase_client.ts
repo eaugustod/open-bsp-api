@@ -22,11 +22,14 @@ export function createClient(req: Request) {
     throw new Error("Invalid Authorization header format");
   }
 
+  const schema = (Deno.env.get("SUPABASE_DB_SCHEMA") || "public") as "public";
+
   return createClientBase<Database>(
     Deno.env.get("SUPABASE_URL")!,
     Deno.env.get("SUPABASE_ANON_KEY")!,
     {
       auth: { persistSession: false },
+      db: { schema },
       global: {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -57,11 +60,14 @@ export function createApiClient(req: Request) {
     throw new Error("Invalid Authorization header format");
   }
 
+  const schema = (Deno.env.get("SUPABASE_DB_SCHEMA") || "public") as "public";
+
   return createClientBase<Database>(
     Deno.env.get("SUPABASE_URL")!,
     Deno.env.get("SUPABASE_ANON_KEY")!,
     {
       auth: { persistSession: false },
+      db: { schema },
       global: {
         headers: {
           "api-key": token,
@@ -83,11 +89,14 @@ export function createApiClientFromKey(apiKey: string) {
     throw new Error("Undefined SUPABASE_ANON_KEY env var.");
   }
 
+  const schema = (Deno.env.get("SUPABASE_DB_SCHEMA") || "public") as "public";
+
   return createClientBase<Database>(
     Deno.env.get("SUPABASE_URL")!,
     Deno.env.get("SUPABASE_ANON_KEY")!,
     {
       auth: { persistSession: false },
+      db: { schema },
       global: {
         headers: {
           "api-key": apiKey,
@@ -106,11 +115,14 @@ export function createUnsecureClient() {
     throw new Error("Undefined SUPABASE_SERVICE_ROLE_KEY env var.");
   }
 
+  const schema = (Deno.env.get("SUPABASE_DB_SCHEMA") || "public") as "public";
+
   return createClientBase<Database>(
     Deno.env.get("SUPABASE_URL")!,
     Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
     {
       auth: { persistSession: false },
+      db: { schema },
     },
   );
 }

@@ -1,0 +1,12 @@
+.git
+.github
+ui/node_modules
+ui/.git
+demo.mp4
+screenshot.png
+ui/screenshot.png
+ui/demo.mp4
+*.zip
+*.pdf
+app-review
+

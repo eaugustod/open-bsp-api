@@ -27,7 +27,7 @@ type InvitationRow = Database["public"]["Tables"]["invitations"]["Row"];
 
 const SERVICE_ROLE_KEY = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
 
-Deno.serve(async (req) => {
+export async function handleRequest(req: Request): Promise<Response> {
   const token = req.headers.get("Authorization")?.replace("Bearer ", "");
 
   if (token !== SERVICE_ROLE_KEY) {
@@ -37,12 +37,12 @@ Deno.serve(async (req) => {
   const payload = (await req.json()) as WebhookPayload<
     InvitationRow | AlertRow | AddressRow
   >;
-  const source = `${payload.schema}.${payload.table}`;
+  const table = payload.table;
 
   try {
     const client = createUnsecureClient();
 
-    if (source === "public.invitations") {
+    if (table === "invitations") {
       const invitation = payload.record as InvitationRow;
       const before = payload.old_record as InvitationRow | null;
 
@@ -54,10 +54,10 @@ Deno.serve(async (req) => {
       ) {
         await invitationAccepted(invitation);
       }
-    } else if (source === "billing.alerts" && payload.type === "INSERT") {
+    } else if (table === "alerts" && payload.type === "INSERT") {
       await quotaAlert(client, payload.record as AlertRow);
     } else if (
-      source === "public.organizations_addresses" && payload.type === "UPDATE"
+      table === "organizations_addresses" && payload.type === "UPDATE"
     ) {
       await addressIssue(client, payload.record as AddressRow);
     }
@@ -65,13 +65,17 @@ Deno.serve(async (req) => {
     return new Response();
   } catch (error) {
     log.error("Notification failed", {
-      source,
+      table,
       type: payload.type,
       error: error instanceof Error ? error.message : String(error),
     });
     return new Response("Internal error", { status: 500 });
   }
-});
+}
+
+if (import.meta.main) {
+  Deno.serve(handleRequest);
+}
 
 function asRole(role: string) {
   return role === "member" ? "a member" : `an ${role}`;

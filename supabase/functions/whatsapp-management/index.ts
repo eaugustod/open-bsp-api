@@ -40,7 +40,7 @@ type TemplatePayload = {
 
 type AppEnv = ManagementEnv;
 
-const app = new Hono<AppEnv>();
+export const app = new Hono<AppEnv>();
 
 // CORS middleware
 app.use("*", cors());
@@ -532,4 +532,6 @@ app.post("/whatsapp-management/onboard/events", async (c) => {
   return c.body(null, 204);
 });
 
-Deno.serve(app.fetch);
+if (import.meta.main) {
+  Deno.serve(app.fetch);
+}
